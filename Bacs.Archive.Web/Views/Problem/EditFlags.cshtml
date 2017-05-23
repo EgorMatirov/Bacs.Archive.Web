@@ -1,0 +1,48 @@
+﻿@model Bacs.Archive.Web.Models.ProblemViewModels.EditFlagsViewModel
+
+@{
+    ViewBag.Title = "Редактирование флагов задачи";
+    Layout = "_Layout";
+}
+
+<h2>Редактирование флагов задачи</h2>
+
+@using (Html.BeginForm("EditFlags", "Problem", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id, Model.Id)
+        <div class="form-group">
+            @Html.LabelFor(x => x.ReservedFlags, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                @for (var i = 0; i < Model.ReservedFlags.Count; i++)
+                {
+                    <div class="col-md-10">
+                        @Html.LabelFor(x => x.ReservedFlags[i].Enabled, Model.ReservedFlags[i].Name)
+                        @Html.HiddenFor(x => x.ReservedFlags[i].Name, Model.ReservedFlags[i].Name)
+                        @Html.CheckBoxFor(model => model.ReservedFlags[i].Enabled, new {@class = "checkbox-flags"})
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.CustomFlags, new { @class = "col-md-2" })
+            <div class="col-md-10">
+                <select asp-for="CustomFlags" multiple data-role="tagsinput">
+                    @foreach (var flag in Model.CustomFlags)
+                    {
+                        <option value="@flag">@flag</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                @Html.ActionLink("Вернуться к задаче", "Details", new { Model.Id }, new { @class = "btn" })
+            </div>
+        </div>
+    </div>
+}

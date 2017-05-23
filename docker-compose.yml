@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+  bacs.archive.web:
+    image: bacs.archive.web
+    build:
+      context: ./Bacs.Archive.Web
+      dockerfile: Dockerfile
+    environment:
+      Google.ClientId: "CLIENT_ID"
+      Google.ClientSecret: "CLIENT_SECRET"
+  db:
+    image: "microsoft/mssql-server-linux"
+    environment:
+      SA_PASSWORD: "P/a(Sw0Rd"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1444:1433"
+#  migrations:
+#    image: microsoft/aspnetcore-build:1.0-1.1
+#    volumes:
+#      - .:/src
+#    working_dir: /src
+#    command: /bin/bash -c "dotnet restore ./Bacs.Archive.Web.sln && cd Bacs.Archive.Web && dotnet ef database update"

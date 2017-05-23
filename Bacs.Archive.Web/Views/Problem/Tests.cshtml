@@ -1,0 +1,61 @@
+﻿@model Bacs.Archive.Web.Models.ProblemViewModels.TestsViewModel
+@{
+    ViewData["Title"] = $"Просмотр тестов {Model.Id}";
+}
+
+<h2>@ViewData["Title"].</h2>
+<div>
+    @foreach (var testGroup in Model.TestGroups)
+    {
+        <dl class="dl-horizontal">
+            <dt>@Html.DisplayNameFor(x => testGroup.Id):</dt>
+            <dd>@testGroup.Id</dd>
+            <dt>@Html.DisplayNameFor(x => testGroup.Continue):</dt>
+            <dd>@testGroup.Continue</dd>
+            <dt>@Html.DisplayNameFor(x => testGroup.Score):</dt>
+            <dd>@testGroup.Score</dd>
+        </dl>
+        foreach (var test in testGroup.Tests)
+        {
+            <hr />
+            <dl class="dl-horizontal">
+                <dt>Id:</dt>
+                <dd>@test.Id</dd>
+                <dt>Ввод:</dt>
+                <dd>
+                    @if (test.Input.Length < 100)
+                    {
+                        <pre>@test.Input</pre>
+                    }
+                    else
+                    {
+                        <a role="button" data-toggle="collapse" href="#@test.Id-input" aria-expanded="false" aria-controls="@test.Id-input">
+                            Toggle
+                        </a>
+                        <div class="collapse" id="@test.Id-input">
+                            <pre>@test.Input</pre>
+                        </div>
+                    }
+                </dd>
+                <dt>Вывод:</dt>
+                <dd>
+                    @if (test.Output.Length < 100)
+                    {
+                        <pre>@test.Output</pre>
+                    }
+                    else
+                    {
+                        <a role="button" data-toggle="collapse" href="#@test.Id-output" aria-expanded="false" aria-controls="@test.Id-output">
+                            Toggle
+                        </a>
+                        <div class="collapse" id="@test.Id-output">
+                            <pre>@test.Output</pre>
+                        </div>
+                    }
+                </dd>
+            </dl>
+        }
+        <hr class="bigHr"/>
+    }
+</div>
+@Html.ActionLink("Вернуться к задаче", "Details", new {id = Model.Id})

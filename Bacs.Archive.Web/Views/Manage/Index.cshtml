@@ -1,0 +1,18 @@
+﻿@model IndexViewModel
+@{
+    ViewData["Title"] = "Управление пользователями";
+}
+
+<h2>@ViewData["Title"].</h2>
+<div>
+    @foreach (var user in Model.Users)
+    {
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>Логин:</dt>
+            <dd>@user.UserName</dd>
+            <dt>Подтверждён:</dt>
+            <dd>@Html.ActionLink(user.IsVerified ? "Да" : "Нет", "ChangeRole", new { user.Id })</dd>
+        </dl>
+    }
+</div>

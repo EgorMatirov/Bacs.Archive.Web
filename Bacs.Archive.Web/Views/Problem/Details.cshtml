@@ -1,0 +1,79 @@
+﻿@model Bacs.Archive.Web.Services.ArchiveClient.ProblemFull
+
+@{
+    ViewBag.Title = "Информация о задаче";
+    Layout = "_Layout";
+}
+
+<h2>Информация о задаче @Model.Id</h2>
+
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name):
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            Statement:
+        </dt>
+        
+        <dd>
+            <a href="http://bacs.cs.istu.ru/problem/@Model.Id" target="_blank">link</a>
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Maintainers):
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Maintainers)
+        </dd>
+
+        <dt>
+            Tests count:
+        </dt>
+
+        <dd>
+            @Html.ActionLink(Model.TestGroups.Sum(x => x.Tests.Count()).ToString(), "Tests", new {id = Model.Id})
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Revision):
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Revision)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ReservedFlags):
+        </dt>
+
+        <dd>
+            @foreach (var flag in Model.ReservedFlags)
+            {
+                <label><input type="checkbox" disabled="" @(flag.Enabled ? "checked" : "")> @flag.Flag</label><br>
+            }
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CustomFlags):
+        </dt>
+        <dd>
+            @foreach (var flag in Model.CustomFlags)
+            {
+                @flag.Name<br />
+            }
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Изменить флаги", "EditFlags", new { id = Model.Id }) |
+    @Html.ActionLink("Скачать", "Download", new { id = Model.Id }) |
+    @Html.ActionLink("Вернуться ко всем задачам", "Index")
+</p>
