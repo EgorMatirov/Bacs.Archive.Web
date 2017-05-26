@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using Bacs.Archive.Web.Models.ProblemViewModels;
 using Bacs.Archive.Web.Services.ArchiveClient;

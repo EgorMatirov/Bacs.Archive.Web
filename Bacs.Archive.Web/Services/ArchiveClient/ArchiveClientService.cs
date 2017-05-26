@@ -17,10 +17,12 @@ namespace Bacs.Archive.Web.Services.ArchiveClient
     // ReSharper disable once ClassNeverInstantiated.Global
     internal class ArchiveClientService : IArchiveClientService
     {
+        private readonly string _bacsStatementsKey;
         private readonly IArchiveClient _archiveClient;
 
-        public ArchiveClientService(string host, int port, string clientCertificatePath, string clientKeyPath, string caCertificatePath)
+        public ArchiveClientService(string host, int port, string clientCertificatePath, string clientKeyPath, string caCertificatePath, string bacsStatementsKey)
         {
+            _bacsStatementsKey = bacsStatementsKey;
             _archiveClient = ArchiveClientFactory.CreateFromFiles(host, port, clientCertificatePath, clientKeyPath, caCertificatePath);
         }
 
@@ -63,11 +65,12 @@ namespace Bacs.Archive.Web.Services.ArchiveClient
                 Tests = x.Tests.Query.Select(y => y.Id),
                 WhileOk = x.Tests.ContinueCondition == TestSequence.Types.ContinueCondition.WhileOk,
             });
-            
-            var hasPretests = profileExtension.TestGroup.Any(x => x.Id == "pre");
+
+            const string pretestsPrefix = "pre";
+            var hasPretests = profileExtension.TestGroup.Any(x => x.Id == pretestsPrefix);
             var pretestsCount = !hasPretests ? 0 : profileExtension
                 .TestGroup
-                .FirstOrDefault(x => x.Id != "pre")
+                .FirstOrDefault(x => x.Id != pretestsPrefix)
                 .Tests.Query.Count;
 
             return new ProblemFull(
@@ -78,7 +81,8 @@ namespace Bacs.Archive.Web.Services.ArchiveClient
                 reservedFlags,
                 customFlags,
                 testGroups,
-                pretestsCount);
+                pretestsCount,
+                $"http://bacs.cs.istu.ru/problem/{id}?key={_bacsStatementsKey}");
         }
 
         public string Create(IEnumerable<byte> bytes)

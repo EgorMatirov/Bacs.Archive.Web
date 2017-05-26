@@ -57,7 +57,8 @@ namespace Bacs.Archive.Web
                 int.Parse(Configuration["Archive.Port"]),
                 Configuration["Archive.ClientCertificate"],
                 Configuration["Archive.ClientKey"],
-                Configuration["Archive.CACertificate"]));
+                Configuration["Archive.CACertificate"],
+                Configuration["Bacs.Statements.Key"]));
             services.AddTransient<ITestsFetcher, TestsFetcher>();
             services.AddBootstrapPagerGenerator(options =>
             {

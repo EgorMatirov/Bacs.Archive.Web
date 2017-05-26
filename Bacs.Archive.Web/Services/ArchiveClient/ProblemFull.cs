@@ -35,12 +35,13 @@ namespace Bacs.Archive.Web.Services.ArchiveClient
         public string Maintainers { get; }
         public string Id { get; }
         public string Revision { get; }
+        public string StatementUrl { get; }
         public IEnumerable<ReservedFlag> ReservedFlags { get; set; }
         public IEnumerable<CustomFlag> CustomFlags { get; set; }
         public IEnumerable<TestGroup> TestGroups { get; set; }
         public int PretestsCount { get; set; }
 
-        public ProblemFull(string id, string name, string maintainers, string revision, IEnumerable<ReservedFlag> reservedFlags, IEnumerable<CustomFlag> customFlags, IEnumerable<TestGroup> testGroups, int pretestsCount)
+        public ProblemFull(string id, string name, string maintainers, string revision, IEnumerable<ReservedFlag> reservedFlags, IEnumerable<CustomFlag> customFlags, IEnumerable<TestGroup> testGroups, int pretestsCount, string statementUrl)
         {
             Id = id;
             Name = name;
@@ -50,6 +51,7 @@ namespace Bacs.Archive.Web.Services.ArchiveClient
             CustomFlags = customFlags;
             TestGroups = testGroups;
             PretestsCount = pretestsCount;
+            StatementUrl = statementUrl;
         }
     }
 }
