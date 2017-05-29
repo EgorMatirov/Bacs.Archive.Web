@@ -13,6 +13,8 @@
             <dd>@user.UserName</dd>
             <dt>Подтверждён:</dt>
             <dd>@Html.ActionLink(user.IsVerified ? "Да" : "Нет", "ChangeRole", new { user.Id })</dd>
+            <dt>Может загружать задачи:</dt>
+            <dd>@Html.ActionLink(user.CanUpload ? "Да" : "Нет", "ChangeRole", new { user.Id })</dd>
         </dl>
     }
 </div>

@@ -37,11 +37,18 @@ namespace Bacs.Archive.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var verifiedRoleId = await GetVerifiedRoleId();
+            var maintainerRoleId = await GetMaintainerRoleId();
             var userModels = _userManager
                 .Users
                 .Include(x => x.Roles)
                 .ToList() // Required due to bug.
-                .Select(x => new IndexViewModel.UserModel { Id = x.Id, UserName = x.UserName, IsVerified = x.Roles.Any(r => r.RoleId == verifiedRoleId) })
+                .Select(x => new IndexViewModel.UserModel
+                {
+                    Id = x.Id,
+                    UserName = x.UserName,
+                    IsVerified = x.Roles.Any(r => r.RoleId == verifiedRoleId),
+                    CanUpload = x.Roles.Any(r => r.RoleId == maintainerRoleId)
+                })
                 .ToList();
 
             var model = new IndexViewModel { Users = userModels };
