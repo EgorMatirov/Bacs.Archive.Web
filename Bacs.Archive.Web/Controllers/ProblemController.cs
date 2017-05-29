@@ -45,6 +45,7 @@ namespace Bacs.Archive.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles="Maintainer")] // TODO: Extract constant to global constants.
         public ActionResult Create(IFormCollection collection)
         {
             var bytes = collection.Files.Single().OpenReadStream().AsEnumerable();
