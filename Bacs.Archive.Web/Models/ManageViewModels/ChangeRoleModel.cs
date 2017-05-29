@@ -9,5 +9,7 @@ namespace Bacs.Archive.Web.Models.ManageViewModels
         public string UserName { get; set; }
         [Display(Name = "Подтверждён")]
         public bool IsVerified { get; set; }
+        [Display(Name = "Может загружать задачи")]
+        public bool CanUpload { get; set; }
     }
 }

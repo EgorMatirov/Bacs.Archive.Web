@@ -24,6 +24,14 @@
                     @Html.ValidationMessageFor(model => model.IsVerified, "", new { @class = "text-danger" })
                 </div>
             </div>
+
+            @Html.LabelFor(model => model.CanUpload, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.CanUpload)
+                    @Html.ValidationMessageFor(model => model.CanUpload, "", new { @class = "text-danger" })
+                </div>
+            </div>
         </div>
 
         <div class="form-group">

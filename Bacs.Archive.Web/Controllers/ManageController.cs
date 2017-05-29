@@ -15,6 +15,8 @@ namespace Bacs.Archive.Web.Controllers
     [Authorize(Roles="Admin")]
     public class ManageController : Controller
     {
+        private const string UserRoleName = "User";
+        private const string MaintainerRoleName = "Maintainer";
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
 
@@ -46,10 +48,28 @@ namespace Bacs.Archive.Web.Controllers
             return View(model);
         }
 
-        private async Task<string> GetVerifiedRoleId()
+        private async Task<string> GetRoleId(string roleName)
         {
-            var verifiedRole = await _roleManager.FindByNameAsync("User").ConfigureAwait(true);
-            return verifiedRole.Id;
+            var role = await _roleManager.FindByNameAsync(roleName).ConfigureAwait(true);
+            return role.Id;
+        }
+
+        private Task<string> GetVerifiedRoleId()
+        {
+            return GetRoleId(UserRoleName);
+        }
+
+        private Task<string> GetMaintainerRoleId()
+        {
+            return GetRoleId(MaintainerRoleName);
+        }
+
+        private async Task UpdateRoleStatus(ApplicationUser user, string roleName, bool condition)
+        {
+            if (condition)
+                await _userManager.AddToRoleAsync(user, roleName);
+            else
+                await _userManager.RemoveFromRoleAsync(user, roleName);
         }
 
         [HttpGet]
@@ -57,8 +77,15 @@ namespace Bacs.Archive.Web.Controllers
         {
             var user = _userManager.Users.Where(x => x.Id == id).Include(x => x.Roles).First();
             var verifiedRoleId = await GetVerifiedRoleId();
+            var maintainerRoleId = await GetMaintainerRoleId();
 
-            var model = new ChangeRoleModel() { Id = user.Id, UserName = user.UserName, IsVerified = user.Roles.Any(r => r.RoleId == verifiedRoleId) };
+            var model = new ChangeRoleModel
+            {
+                Id = user.Id,
+                UserName = user.UserName,
+                IsVerified = user.Roles.Any(r => r.RoleId == verifiedRoleId),
+                CanUpload = user.Roles.Any(r => r.RoleId == maintainerRoleId)
+            };
             return View(model);
         }
 
@@ -66,10 +93,8 @@ namespace Bacs.Archive.Web.Controllers
         public async Task<ActionResult> ChangeRole(ChangeRoleModel model)
         {
             var user = await _userManager.FindByIdAsync(model.Id);
-            if (model.IsVerified)
-                await _userManager.AddToRoleAsync(user, "User");
-            else
-                await _userManager.RemoveFromRoleAsync(user, "User");
+            await UpdateRoleStatus(user, UserRoleName, model.IsVerified);
+            await UpdateRoleStatus(user, MaintainerRoleName, model.CanUpload);
             await _userManager.UpdateSecurityStampAsync(user);
             return RedirectToAction("Index");
         }

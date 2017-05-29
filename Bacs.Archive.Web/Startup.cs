@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using Bacs.Archive.Web.Data;
 using Bacs.Archive.Web.Models;
 using Bacs.Archive.Web.Services.ArchiveClient;
 using Bacs.Archive.Web.Services.TestsFetcher;
+using Microsoft.AspNetCore.Identity;
 using Sakura.AspNetCore.Mvc;
 
 namespace Bacs.Archive.Web
@@ -102,6 +104,23 @@ namespace Bacs.Archive.Web
                     "default",
                     "{controller=Problem}/{action=Index}/{id?}");
             });
+
+            CreateRolesandUsers(serviceProvider).Wait();
+        }
+
+        private static async Task CreateRole(RoleManager<IdentityRole> roleManager, string roleName)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
+
+        private static async Task CreateRolesandUsers(IServiceProvider serviceProvider)
+        {
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            await CreateRole(roleManager, "User");
+            await CreateRole(roleManager, "Maintainer");
         }
     }
 }
